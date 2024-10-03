@@ -1,4 +1,4 @@
-package com.example.demo.repository;
+package com.repository;
 
 public class HomeRepository {
     
