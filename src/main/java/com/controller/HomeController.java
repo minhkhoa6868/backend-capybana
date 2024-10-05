@@ -1,20 +1,20 @@
 package com.controller;
 
-import org.springframework.web.bind.annotation.RestController;
+// import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.stereotype.Controller;
 
 
-@RestController
+@Controller
 public class HomeController {
     @GetMapping("/user")
     public String UserHomePage() {
-        return "This is user home page";
+        return "home";
     }
 
-    @GetMapping("/admin")
-    public String AdminHomePage() {
-        return "This is admin home page";
-    }
+    // @GetMapping("/admin")
+    // public String AdminHomePage() {
+    //     return "This is admin home page";
+    // }
     
 }
