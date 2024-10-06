@@ -1,6 +1,5 @@
 package com.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -15,15 +14,15 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.service.UserService;
 
-import lombok.AllArgsConstructor;
-
 @Configuration
-@AllArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
-    
-    @Autowired
+
     private final UserService userService;
+
+    public SecurityConfig(UserService userService) {
+        this.userService = userService;
+    }
 
     // use for load user details
     @Bean
@@ -36,7 +35,8 @@ public class SecurityConfig {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         // set userService as the source for retrieving user details
         provider.setUserDetailsService(userService);
-        // set password to BCrypt to make sure that passwords are encrypted when checking
+        // set password to BCrypt to make sure that passwords are encrypted when
+        // checking
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
@@ -50,9 +50,10 @@ public class SecurityConfig {
     // csrf: cross-site request forgery
     // requestMatchers: allowss everyone to access signup page
     // permitAll: if don't have this, user will be accessed to login page forever
-    // all other requests must be authenticated. If a user is not logged in, they wil be redirected to login page
+    // all other requests must be authenticated. If a user is not logged in, they
+    // wil be redirected to login page
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(httpForm -> {
@@ -61,7 +62,7 @@ public class SecurityConfig {
                 })
 
                 .authorizeHttpRequests(registery -> {
-                    registery.requestMatchers("/signup","/css/**","/js/**").permitAll();
+                    registery.requestMatchers("/signup", "/css/**", "/js/**").permitAll();
                     registery.anyRequest().authenticated();
                 })
 
