@@ -10,7 +10,7 @@ public class HottestFilmController {
     public String UserHottestFilmPage() {
         return "This is user hottest film page";
     }
-    
+
     @GetMapping("/admin/hot")
     public String AdminHottestFilmPage() {
         return "This is admin hottest film page";
