@@ -4,11 +4,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.model.Movie;
 import com.service.MovieService;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 public class MovieController {
@@ -24,9 +30,28 @@ public class MovieController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newMovie);
     }
 
-    // @GetMapping("/movies")
-    // public ResponseEntity<List<Movie>> getAllMovies() {
-    // return ResponseEntity.status(HttpStatus.OK).body(this.movieService.get)
-    // }
+    @DeleteMapping("/movies/{id}")
+    public ResponseEntity<String> deleteMovie(@PathVariable("id") long id) {
+        this.movieService.handleDeleteMovie(id);
+        return ResponseEntity.status(HttpStatus.OK).body("deleted");
+    }
+
+    @GetMapping("/movies/{id}")
+    @ResponseBody
+    public ResponseEntity<Movie> getMovieByID(@PathVariable("id") long id) {
+        Movie resMovie = this.movieService.handleGetMovie(id);
+        return ResponseEntity.status(HttpStatus.OK).body(resMovie);
+    }
+
+    @GetMapping("/movies")
+    public ResponseEntity<List<Movie>> getAllMovies() {
+        return ResponseEntity.status(HttpStatus.OK).body(this.movieService.handleGetAllMovie());
+    }
+
+    @PutMapping("/movies")
+    public ResponseEntity<Movie> updateMovie(@RequestBody Movie mv) {
+        Movie targetMovie = this.movieService.handleUpdateMovie(mv);
+        return ResponseEntity.ok(targetMovie);
+    }
 
 }
