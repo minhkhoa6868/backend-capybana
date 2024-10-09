@@ -1,6 +1,8 @@
 package com.controller;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import com.error.ResInvalidException;
 import com.model.Movie;
 import com.service.MovieService;
 import java.util.List;
@@ -36,7 +38,10 @@ public class MovieController {
 
     @GetMapping("/api/movies/{id}")
     @ResponseBody
-    public ResponseEntity<Movie> getMovieByID(@PathVariable("id") long id) {
+    public ResponseEntity<Movie> getMovieByID(@PathVariable("id") long id) throws ResInvalidException {
+        if (id > 100) {
+            throw new ResInvalidException("id too big");
+        }
         Movie resMovie = this.movieService.handleGetMovie(id);
         return ResponseEntity.status(HttpStatus.OK).body(resMovie);
     }
