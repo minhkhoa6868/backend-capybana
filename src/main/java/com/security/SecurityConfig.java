@@ -18,26 +18,17 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class SecurityConfig {
 
-    // create encoded password to store in db
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // use for processing authentication requests and returning an Authentication
-    // object
-    // if the authentication is successful
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 
-    // use to filter and process incoming requests based on the defined rules.
-    // crsf: cross-site request forgrery -> designed to prevent the attackers from
-    // executing unauthorized actions on behalf of the authenticated users.
-    // authorizeHttpRequests: defines the authorization rules for incoming requests.
-    //
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
