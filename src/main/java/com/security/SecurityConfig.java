@@ -2,72 +2,50 @@ package com.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import com.service.UserService;
+
+import lombok.AllArgsConstructor;
 
 @Configuration
-@EnableWebSecurity
+@EnableMethodSecurity
+@AllArgsConstructor
 public class SecurityConfig {
 
-    private final UserService userService;
-
-    public SecurityConfig(UserService userService) {
-        this.userService = userService;
-    }
-
-    // Use for loading user details
+    // create encoded password to store in db
     @Bean
-    public UserDetailsService userDetailsService() {
-        return userService;
-    }
-
-    // Set up AuthenticationProvider
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userService);
-        provider.setPasswordEncoder(passwordEncoder());
-        return provider;
-    }
-
-    // BCrypt password encoding
-    @Bean
-    public PasswordEncoder passwordEncoder() {
+    public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Security filter chain configuration
+    // use for processing authentication requests and returning an Authentication
+    // object
+    // if the authentication is successful
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .csrf(csrf -> csrf.disable()) // Disable CSRF protection
-                .formLogin(httpForm -> {
-                    httpForm.loginPage("/login").permitAll();
-                    httpForm.defaultSuccessUrl("/user", true);
-                })
-                .authorizeHttpRequests(authorize -> {
-                    authorize
-                            .requestMatchers("/signup", "/css/**", "/js/**").permitAll()
-                            .requestMatchers("/api/auth/**").permitAll()
-                            .anyRequest().authenticated();
-                });
-
-        return httpSecurity.build();
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
 
-    // Expose AuthenticationManager as a bean
+    // use to filter and process incoming requests based on the defined rules.
+    // crsf: cross-site request forgrery -> designed to prevent the attackers from
+    // executing unauthorized actions on behalf of the authenticated users.
+    // authorizeHttpRequests: defines the authorization rules for incoming requests.
+    //
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-            throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        http
+                .csrf(csrf -> csrf.disable()) // disable CSRF protection
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/api/**").permitAll()
+                        .anyRequest().authenticated());
+        return http.build();
     }
 }
