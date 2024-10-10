@@ -1,46 +1,55 @@
 package com.service;
 
-import com.model.UserInfo;
+import com.model.User;
 import com.repository.UserRepository;
 
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import java.util.Collections;
+import java.util.Optional;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+    public User handleCreateUser(User user) {
+        return this.userRepository.save(user);
+    }
 
-        // find username or email in database
-        UserInfo user = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
-                 .orElseThrow(() ->
-                         new UsernameNotFoundException("User not found with username or email: "+ usernameOrEmail));
+    public void handleDeleteUser(long id) {
+        this.userRepository.deleteById(id);
+    }
 
-        // check which user is in what role and create a permission for that role
-        Set<GrantedAuthority> authorities = user
-            .getRoles() != null ? user.getRoles().stream()
-            .map((role) -> new SimpleGrantedAuthority(role.getName()))
-            .collect(Collectors.toSet()) : Collections.emptySet();
+    public User fetchUserById(long id) {
+        Optional<User> userOptional = this.userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            return userOptional.get();
+        }
+        return null;
+    }
 
-        // return user detail and permission
-        return new User(user.getUsername(),
-                user.getPassword(),
-                authorities);
+    public List<User> fetchAllUser() {
+        return this.userRepository.findAll();
+    }
+
+    public User handleUpdateUser(User reqUser) {
+        User currentUser = this.fetchUserById(reqUser.getId());
+        if (currentUser != null) {
+            currentUser.setEmail(reqUser.getEmail());
+            currentUser.setUsername(reqUser.getUsername());
+            currentUser.setPassword(reqUser.getPassword());
+            // update
+            currentUser = this.userRepository.save(currentUser);
+        }
+        return currentUser;
+    }
+
+    public User handleGetUserByUsername(String username) {
+        return this.userRepository.findByEmail(username);
     }
 }

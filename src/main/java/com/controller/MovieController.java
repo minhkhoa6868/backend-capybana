@@ -4,8 +4,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.model.Movie;
 import com.service.MovieService;
-import java.util.List;
+import com.utils.error.ResInvalidException;
 
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,31 +25,34 @@ public class MovieController {
         this.movieService = mvService;
     }
 
-    @PostMapping("/movies")
+    @PostMapping("/api/movies")
     public ResponseEntity<Movie> createNewMovie(@RequestBody Movie mvInfo) {
         Movie newMovie = movieService.handleCreateMovie(mvInfo);
         return ResponseEntity.status(HttpStatus.CREATED).body(newMovie);
     }
 
-    @DeleteMapping("/movies/{id}")
+    @DeleteMapping("/api/movies/{id}")
     public ResponseEntity<String> deleteMovie(@PathVariable("id") long id) {
         this.movieService.handleDeleteMovie(id);
         return ResponseEntity.status(HttpStatus.OK).body("deleted");
     }
 
-    @GetMapping("/movies/{id}")
+    @GetMapping("/api/movies/{id}")
     @ResponseBody
-    public ResponseEntity<Movie> getMovieByID(@PathVariable("id") long id) {
+    public ResponseEntity<Movie> getMovieByID(@PathVariable("id") long id) throws ResInvalidException {
+        if (id > 100) {
+            throw new ResInvalidException("id too big");
+        }
         Movie resMovie = this.movieService.handleGetMovie(id);
         return ResponseEntity.status(HttpStatus.OK).body(resMovie);
     }
 
-    @GetMapping("/movies")
+    @GetMapping("/api/movies")
     public ResponseEntity<List<Movie>> getAllMovies() {
         return ResponseEntity.status(HttpStatus.OK).body(this.movieService.handleGetAllMovie());
     }
 
-    @PutMapping("/movies")
+    @PutMapping("/api/movies")
     public ResponseEntity<Movie> updateMovie(@RequestBody Movie mv) {
         Movie targetMovie = this.movieService.handleUpdateMovie(mv);
         return ResponseEntity.ok(targetMovie);
