@@ -25,7 +25,7 @@ public class GlobalException {
         RestResponse<Object> res = new RestResponse<Object>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
         res.setError(invalidExcep.getMessage());
-        res.setMessage("API fail");
+        res.setMessage("API load fail -- data receive from capybana");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 
