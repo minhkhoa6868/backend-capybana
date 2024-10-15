@@ -18,6 +18,9 @@ public class MovieService {
     }
 
     public Movie handleCreateMovie(Movie newMovie) {
+        if (this.movieRepository.findByTitle(newMovie.getTitle()) != null) {
+            return null;
+        }
         return this.movieRepository.save(newMovie);
     }
 
@@ -44,6 +47,11 @@ public class MovieService {
             this.movieRepository.save(movie);
         }
         return movie;
+    }
+
+    public String handleDeleteAll() {
+        movieRepository.deleteAll();
+        return "All the movies has been deleted";
     }
 
 }
