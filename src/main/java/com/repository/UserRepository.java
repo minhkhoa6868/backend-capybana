@@ -4,8 +4,7 @@ import org.springframework.stereotype.Repository;
 import com.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-// use for finding user information in db
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    User findByEmail(String email);
+    User findByUsername(String username);
 }

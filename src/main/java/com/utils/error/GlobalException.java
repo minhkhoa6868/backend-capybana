@@ -17,15 +17,15 @@ import com.mysql.cj.x.protobuf.MysqlxDatatypes.Object;
 
 @RestControllerAdvice
 public class GlobalException {
-    @ExceptionHandler(value = { ResInvalidException.class,
+    @ExceptionHandler(value = {
             UsernameNotFoundException.class,
             BadCredentialsException.class })
 
-    public ResponseEntity<RestResponse<Object>> handleException(ResInvalidException invalidExcep) {
+    public ResponseEntity<RestResponse<Object>> handleException(Exception invalidExcep) {
         RestResponse<Object> res = new RestResponse<Object>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
         res.setError(invalidExcep.getMessage());
-        res.setMessage("API load fail -- data receive from capybana");
+        res.setMessage("API exception");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 

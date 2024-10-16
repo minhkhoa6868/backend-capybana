@@ -26,6 +26,9 @@ public class FormatRestController implements ResponseBodyAdvice {
         int statusCode = servletResponse.getStatus();
         RestResponse<Object> result = new RestResponse<Object>();
         result.setStatusCode(statusCode);
+        if (body instanceof String) {
+            return body;
+        }
         if (statusCode >= 400) {
             return body;
         } else {
