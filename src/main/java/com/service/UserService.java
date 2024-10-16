@@ -50,6 +50,6 @@ public class UserService {
     }
 
     public User handleGetUserByUsername(String username) {
-        return this.userRepository.findByEmail(username);
+        return this.userRepository.findByUsername(username);
     }
 }
