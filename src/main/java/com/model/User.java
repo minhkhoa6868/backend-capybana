@@ -1,12 +1,16 @@
 package com.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
                 @UniqueConstraint(columnNames = { "username" }),
                 @UniqueConstraint(columnNames = { "email" })
 })
+@Getter
+@Setter
 public class User {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,46 +18,7 @@ public class User {
         private String username;
         private String email;
         private String password;
-        private Boolean isAdmin;
-
-        public long getId() {
-                return id;
-        }
-
-        public void setId(long id) {
-                this.id = id;
-        }
-
-        public String getUsername() {
-                return username;
-        }
-
-        public void setUsername(String username) {
-                this.username = username;
-        }
-
-        public String getEmail() {
-                return email;
-        }
-
-        public void setEmail(String email) {
-                this.email = email;
-        }
-
-        public String getPassword() {
-                return password;
-        }
-
-        public void setPassword(String password) {
-                this.password = password;
-        }
-
-        public Boolean getIsAdmin() {
-                return isAdmin;
-        }
-
-        public void setIsAdmin(Boolean isAdmin) {
-                this.isAdmin = isAdmin;
-        }
+        @Column(columnDefinition = "TINYINT(1) default 0", nullable = false)
+        private Boolean isAdmin = false;
 
 }
