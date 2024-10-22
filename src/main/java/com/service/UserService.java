@@ -43,7 +43,6 @@ public class UserService {
             currentUser.setEmail(reqUser.getEmail());
             currentUser.setUsername(reqUser.getUsername());
             currentUser.setPassword(reqUser.getPassword());
-            // update
             currentUser = this.userRepository.save(currentUser);
         }
         return currentUser;
@@ -52,4 +51,13 @@ public class UserService {
     public User handleGetUserByUsername(String username) {
         return this.userRepository.findByUsername(username);
     }
+
+    public boolean isEmailExist(String email) {
+        return this.userRepository.existsByEmail(email);
+    }
+
+    public boolean isUsernameExist(String email) {
+        return this.userRepository.existsByUsername(email);
+    }
+
 }

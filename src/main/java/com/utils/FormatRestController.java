@@ -9,6 +9,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import com.model.RestResponse;
+import com.utils.annotation.ApiMessage;
+
 import jakarta.servlet.http.HttpServletResponse;
 
 @ControllerAdvice
@@ -33,7 +35,8 @@ public class FormatRestController implements ResponseBodyAdvice {
             return body;
         } else {
             result.setData(body);
-            result.setMessage("Call Success");
+            ApiMessage message = returnType.getMethodAnnotation(ApiMessage.class);
+            result.setMessage(message != null ? message.value() : "Call Success");
         }
         return result;
     }
