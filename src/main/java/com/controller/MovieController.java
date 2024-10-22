@@ -4,12 +4,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.model.Movie;
 import com.service.MovieService;
+import com.utils.annotation.ApiMessage;
 import com.utils.error.ResInvalidException;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
+@RequestMapping("/api")
 public class MovieController {
     private final MovieService movieService;
 
@@ -24,7 +27,8 @@ public class MovieController {
         this.movieService = mvService;
     }
 
-    @PostMapping("/api/movies")
+    @PostMapping("/movies")
+    @ApiMessage("Created movie")
     public ResponseEntity<Movie> createNewMovie(@RequestBody Movie mvInfo) {
         Movie newMovie = movieService.handleCreateMovie(mvInfo);
         if (newMovie == null) {
@@ -33,7 +37,8 @@ public class MovieController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newMovie);
     }
 
-    @DeleteMapping("/api/movies/{id}")
+    @DeleteMapping("/movies/{id}")
+    @ApiMessage("Deleted movie")
     public ResponseEntity<String> deleteMovie(@PathVariable("id") long id) throws ResInvalidException {
         if (this.movieService.handleGetMovie(id) == null) {
             throw new ResInvalidException("Movie doesn't exist");
@@ -42,13 +47,16 @@ public class MovieController {
         return ResponseEntity.status(HttpStatus.OK).body("deleted");
     }
 
-    @DeleteMapping("/api/movies/all")
+    @DeleteMapping("/movies/all/abcde")
+    @ApiMessage("Data Refreshed")
+
     public ResponseEntity<String> deleteAllMovie() {
         String response = this.movieService.handleDeleteAll();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping("/api/movies/{id}")
+    @GetMapping("/movies/{id}")
+    @ApiMessage("Get movie {id} success")
     @ResponseBody
     public ResponseEntity<Movie> getMovieByID(@PathVariable("id") long id) throws ResInvalidException {
         Movie resMovie = this.movieService.handleGetMovie(id);
@@ -58,12 +66,14 @@ public class MovieController {
         return ResponseEntity.status(HttpStatus.OK).body(resMovie);
     }
 
-    @GetMapping("/api/movies")
+    @GetMapping("/movies")
+    @ApiMessage("Get all movies success")
     public ResponseEntity<List<Movie>> getAllMovies() {
         return ResponseEntity.status(HttpStatus.OK).body(this.movieService.handleGetAllMovie());
     }
 
-    @PutMapping("/api/movies")
+    @PutMapping("/movies")
+    @ApiMessage("Movie has been updated")
     public ResponseEntity<Movie> updateMovie(@RequestBody Movie mv) throws ResInvalidException {
         Movie targetMovie = this.movieService.handleUpdateMovie(mv);
         if (targetMovie == null) {
