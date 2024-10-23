@@ -34,7 +34,7 @@ public class MovieController {
     }
 
     @DeleteMapping("/api/movies/{id}")
-    public ResponseEntity<String> deleteMovie(@PathVariable("id") long id) throws ResInvalidException {
+    public ResponseEntity<String> deleteMovie(@PathVariable long id) throws ResInvalidException {
         if (this.movieService.handleGetMovie(id) == null) {
             throw new ResInvalidException("Movie doesn't exist");
         }
@@ -50,7 +50,7 @@ public class MovieController {
 
     @GetMapping("/api/movies/{id}")
     @ResponseBody
-    public ResponseEntity<Movie> getMovieByID(@PathVariable("id") long id) throws ResInvalidException {
+    public ResponseEntity<Movie> getMovieByID(@PathVariable long id) throws ResInvalidException {
         Movie resMovie = this.movieService.handleGetMovie(id);
         if (resMovie == null) {
             throw new ResInvalidException("ID doesn't exist");
