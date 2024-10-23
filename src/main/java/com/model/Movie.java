@@ -29,5 +29,4 @@ public class Movie {
     @ManyToOne
     @JoinColumn(name = "categoryId")
     Category category;
-
 }
