@@ -2,16 +2,24 @@ package com.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.NoSuchElementException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.model.Category;
 import com.model.Movie;
+import com.repository.CategoryRepository;
 import com.repository.MovieRepository;
+
 
 @Service
 
 public class MovieService {
     private final MovieRepository movieRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     public MovieService(MovieRepository mvRepo) {
         this.movieRepository = mvRepo;
@@ -21,6 +29,16 @@ public class MovieService {
         if (this.movieRepository.findByTitle(newMovie.getTitle()) != null) {
             return null;
         }
+
+        Optional<Category> categoryOptional = categoryRepository.findById(newMovie.getCategory().getId());
+
+        if (categoryOptional.isPresent()) {
+            Category category = categoryOptional.get();
+            newMovie.setCategory(category);
+        } else {
+            throw new NoSuchElementException("Category not found with id: " + newMovie.getCategory().getId());
+        }
+
         return this.movieRepository.save(newMovie);
     }
 
