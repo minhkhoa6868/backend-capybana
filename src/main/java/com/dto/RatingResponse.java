@@ -1,5 +1,7 @@
 package com.dto;
 
+import java.time.LocalDateTime;
+
 import com.model.Movie;
 import com.model.User;
 
@@ -9,6 +11,9 @@ public class RatingResponse {
     private User user;
     private Movie movie;
     private int rating;
+    private LocalDateTime ratingDate;
+    // Constructors
+    public RatingResponse(Long id, User user, Movie movie, int rating, LocalDateTime ratingDate) {
 
     // Constructors
     public RatingResponse(Long id, User user, Movie movie, int rating) {
@@ -16,6 +21,7 @@ public class RatingResponse {
         this.user = user;
         this.movie = movie;
         this.rating = rating;
+        this.ratingDate = ratingDate;  // Cập nhật constructor
     }
 
     // Getters and setters
@@ -49,5 +55,13 @@ public class RatingResponse {
 
     public void setRating(int rating) {
         this.rating = rating;
+    }
+
+    public LocalDateTime getRatingDate() {
+        return ratingDate;
+    }
+
+    public void setRatingDate(LocalDateTime ratingDate) {
+        this.ratingDate = ratingDate;
     }
 }
