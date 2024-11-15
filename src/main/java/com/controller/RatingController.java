@@ -37,10 +37,6 @@ public class RatingController {
 
         RatingResponse response = new RatingResponse(newRating.getId(), user, movie, newRating.getRating(), newRating.getRatingDate());
 
-        Rating newRating = ratingService.createRating(new Rating(user, movie, ratingDto.getRating()));
-
-        RatingResponse response = new RatingResponse(newRating.getId(), user, movie, newRating.getRating());
-
         return ResponseEntity.ok(response);
     }
 
@@ -52,7 +48,6 @@ public class RatingController {
         Movie movie = rating.getMovie();
 
         RatingResponse response = new RatingResponse(rating.getId(), user, movie, rating.getRating(), rating.getRatingDate());
-        RatingResponse response = new RatingResponse(rating.getId(), user, movie, rating.getRating());
 
         return ResponseEntity.ok(response);
     }
