@@ -11,7 +11,8 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Instant;
+// import java.time.Instant;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "movies")
@@ -21,12 +22,15 @@ import java.time.Instant;
 public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "BIGINT UNSIGNED NOT NULL")
     private Long id;
+    @Column(columnDefinition = "VARCHAR(255) NOT NULL")
     private String title;
     @Column(columnDefinition = "MEDIUMTEXT")
     private String description;
-    private Instant releaseDate;
+    @Column(columnDefinition = "DATE")
+    private LocalDate releaseDate;
     @ManyToOne
-    @JoinColumn(name = "categoryId")
+    @JoinColumn(name = "categoryId", columnDefinition = "BIGINT UNSIGNED NOT NULL", referencedColumnName = "id")
     Category category;
 }
