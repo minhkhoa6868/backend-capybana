@@ -19,6 +19,11 @@ public class RatingDto {
         this.movieId = movieId;
         this.rating = rating;
         this.ratingDate = ratingDate;
+
+    public RatingDto(Long userId, Long movieId, int rating) {
+        this.userId = userId;
+        this.movieId = movieId;
+        this.rating = rating;
     }
 
     // Getters and setters

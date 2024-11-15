@@ -22,6 +22,7 @@ public class Rating {
 
     private int rating;
     private LocalDateTime ratingDate;
+
     // Constructors
     public Rating() {
     }
@@ -32,9 +33,12 @@ public class Rating {
         this.rating = rating;
         this.ratingDate = ratingDate;
     }
-
     
-
+    public Rating(User user, Movie movie, int rating) {
+        this.user = user;
+        this.movie = movie;
+        this.rating = rating;
+    }
 
     //get and set--------------
 

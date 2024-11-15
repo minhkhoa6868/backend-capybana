@@ -14,6 +14,9 @@ public class RatingResponse {
     private LocalDateTime ratingDate;
     // Constructors
     public RatingResponse(Long id, User user, Movie movie, int rating, LocalDateTime ratingDate) {
+
+    // Constructors
+    public RatingResponse(Long id, User user, Movie movie, int rating) {
         this.id = id;
         this.user = user;
         this.movie = movie;

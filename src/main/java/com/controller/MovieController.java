@@ -58,7 +58,7 @@ public class MovieController {
     @GetMapping("/movies/{id}")
     @ApiMessage("Get movie {id} success")
     @ResponseBody
-    public ResponseEntity<Movie> getMovieByID(@PathVariable("id") long id) throws ResInvalidException {
+    public ResponseEntity<Movie> getMovieByID(@PathVariable long id) throws ResInvalidException {
         Movie resMovie = this.movieService.handleGetMovie(id);
         if (resMovie == null) {
             throw new ResInvalidException("ID doesn't exist");
