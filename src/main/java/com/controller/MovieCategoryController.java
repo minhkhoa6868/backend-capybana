@@ -23,16 +23,14 @@ public class MovieCategoryController {
     MovieCategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
-    
+
     @GetMapping
     public ResponseEntity<List<Movie>> getAllMovieByCategory(@PathVariable String category) throws ResInvalidException {
         List<Movie> movies = categoryService.handleGetAllMoviesByGenre(category);
-
         if (movies == null) {
             throw new ResInvalidException("No existing" + category);
         }
-
         return ResponseEntity.status(HttpStatus.OK).body(movies);
     }
-    
+
 }

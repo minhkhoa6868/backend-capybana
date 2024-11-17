@@ -5,13 +5,15 @@ import java.util.Optional;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.model.Category;
 import com.model.Movie;
 import com.repository.CategoryRepository;
 import com.repository.MovieRepository;
-
 
 @Service
 
@@ -54,8 +56,9 @@ public class MovieService {
         return null;
     }
 
-    public List<Movie> handleGetAllMovie() {
-        return this.movieRepository.findAll();
+    public List<Movie> handleGetAllMovie(Pageable pageable) {
+        Page<Movie> getList = this.movieRepository.findAll(pageable);
+        return getList.getContent();
     }
 
     public Movie handleUpdateMovie(Movie targetMovie) {
