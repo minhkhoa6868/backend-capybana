@@ -58,43 +58,18 @@ public class MovieService {
         return this.movieRepository.findAll();
     }
 
-    public Movie handleUpdateMovie(long id, Movie targetMovie) {
-        Movie movie = this.handleGetMovie(id);
+    public Movie handleUpdateMovie(Movie targetMovie) {
+        Movie movie = this.handleGetMovie(targetMovie.getId());
         if (movie != null) {
-            // update title
             movie.setTitle(targetMovie.getTitle());
-
-            // update description
-            movie.setDescription(targetMovie.getDescription());
-
-            // update release date
-            movie.setReleaseDate(targetMovie.getReleaseDate());
-
-            // update category
-            Optional<Category> categoryOptional = categoryRepository.findById(movie.getCategory().getId());
-
-            if (categoryOptional.isPresent()) {
-                Category category = categoryOptional.get();
-                category.setId(targetMovie.getCategory().getId());
-                movie.setCategory(category);
-            } else {
-                throw new NoSuchElementException("Category not found with id: " + targetMovie.getCategory().getId());
-            }
-
-            // save to database
             this.movieRepository.save(movie);
         }
         return movie;
     }
 
     public String handleDeleteAll() {
-        this.movieRepository.deleteAll();
+        movieRepository.deleteAll();
         return "All the movies has been deleted";
-    }
-
-    // list of newest film
-    public List<Movie> handleGetNewestMovie() {
-        return this.movieRepository.findAllSortedByNewestDate();
     }
 
 }
