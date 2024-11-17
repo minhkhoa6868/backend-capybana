@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/ratings")
@@ -32,9 +33,9 @@ public class RatingController {
         User user = userService.fetchUserById(ratingDto.getUserId());
         Movie movie = movieService.handleGetMovie(ratingDto.getMovieId());
 
-        Rating newRating = ratingService.createRating(new Rating(user, movie, ratingDto.getRating()));
+        Rating newRating = ratingService.createRating(new Rating(user, movie, ratingDto.getRating(), LocalDateTime.now()));
 
-        RatingResponse response = new RatingResponse(newRating.getId(), user, movie, newRating.getRating());
+        RatingResponse response = new RatingResponse(newRating.getId(), user, movie, newRating.getRating(), newRating.getRatingDate());
 
         return ResponseEntity.ok(response);
     }
@@ -46,7 +47,7 @@ public class RatingController {
         User user = rating.getUser();
         Movie movie = rating.getMovie();
 
-        RatingResponse response = new RatingResponse(rating.getId(), user, movie, rating.getRating());
+        RatingResponse response = new RatingResponse(rating.getId(), user, movie, rating.getRating(), rating.getRatingDate());
 
         return ResponseEntity.ok(response);
     }
