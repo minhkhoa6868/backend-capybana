@@ -1,6 +1,5 @@
 package com.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -13,10 +12,12 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "BIGINT UNSIGNED NOT NULL")
     Long id;
-    @Column(columnDefinition = "VARCHAR(255) NOT NULL")
-    String name;
+    String category;
+
+    // @OneToMany (mappedBy = "category")
+    // @JsonIgnore
+    // private List<Movie> movies;
 
     public Long getId() {
         return this.id;
@@ -26,11 +27,19 @@ public class Category {
         this.id = id;
     }
 
-    public String getNameCategory() {
-        return this.name;
+    public String getCategory() {
+        return this.category;
     }
 
-    public void setNameCategory(String name) {
-        this.name = name;
+    public void setCategory(String category) {
+        this.category = category;
     }
+
+    // public List<Movie> getMovies() {
+    //     return movies;
+    // }
+
+    // public void setMovies(List<Movie> movies) {
+    //     this.movies = movies;
+    // }
 }
