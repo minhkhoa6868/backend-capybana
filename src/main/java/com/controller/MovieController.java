@@ -7,11 +7,15 @@ import com.service.MovieService;
 import com.utils.annotation.ApiMessage;
 import com.utils.error.ResInvalidException;
 import java.util.List;
+import java.util.Optional;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -68,8 +72,14 @@ public class MovieController {
 
     @GetMapping("/movies")
     @ApiMessage("Get all movies success")
-    public ResponseEntity<List<Movie>> getAllMovies() {
-        return ResponseEntity.status(HttpStatus.OK).body(this.movieService.handleGetAllMovie());
+    public ResponseEntity<List<Movie>> getAllMovies(@RequestParam("current") Optional<String> currentOption,
+            @RequestParam("pageSize") Optional<String> pageSizeOption) {
+        String currentStr = currentOption.isPresent() ? currentOption.get() : "";
+        String pageOptionStr = pageSizeOption.isPresent() ? pageSizeOption.get() : "";
+        int currentPg = Integer.parseInt(currentStr) - 1;
+        int sizePg = Integer.parseInt(pageOptionStr);
+        Pageable pageable = PageRequest.of(currentPg, sizePg);
+        return ResponseEntity.status(HttpStatus.OK).body(this.movieService.handleGetAllMovie(pageable));
     }
 
     @PutMapping("/movies/{id}")
