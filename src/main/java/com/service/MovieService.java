@@ -7,6 +7,8 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -16,6 +18,7 @@ import com.model.Category;
 import com.model.Movie;
 import com.repository.CategoryRepository;
 import com.repository.MovieRepository;
+import com.turkraft.springfilter.boot.Filter;
 
 @Service
 
@@ -58,8 +61,8 @@ public class MovieService {
         return null;
     }
 
-    public PaginationData handleGetAllMovie(Pageable pageable) {
-        Page<Movie> getList = this.movieRepository.findAll(pageable);
+    public PaginationData handleGetAllMovie(@Filter Specification<Movie> spec, Pageable pageable) {
+        Page<Movie> getList = this.movieRepository.findAll(spec, pageable);
         PaginationData data = new PaginationData();
         Meta metaResult = new Meta();
         metaResult.setPageSize(getList.getSize());

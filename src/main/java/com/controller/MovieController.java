@@ -5,11 +5,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dto.PaginationData;
 import com.model.Movie;
 import com.service.MovieService;
+import com.turkraft.springfilter.boot.Filter;
 import com.utils.annotation.ApiMessage;
 import com.utils.error.ResInvalidException;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,15 +73,8 @@ public class MovieController {
     }
 
     @GetMapping("/movies")
-    @ApiMessage("Get all movies success")
-    public ResponseEntity<PaginationData> getAllMovies(@RequestParam("current") Optional<String> currentOption,
-            @RequestParam("pageSize") Optional<String> pageSizeOption) {
-        String currentStr = currentOption.isPresent() ? currentOption.get() : "";
-        String pageOptionStr = pageSizeOption.isPresent() ? pageSizeOption.get() : "";
-        int currentPg = Integer.parseInt(currentStr) - 1;
-        int sizePg = Integer.parseInt(pageOptionStr);
-        Pageable pageable = PageRequest.of(currentPg, sizePg);
-        return ResponseEntity.status(HttpStatus.OK).body(this.movieService.handleGetAllMovie(pageable));
+    public ResponseEntity<PaginationData> getAllMovies(@Filter Specification<Movie> spec, Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.movieService.handleGetAllMovie(spec, pageable));
     }
 
     @PutMapping("/movies")
