@@ -23,7 +23,7 @@ public class CategoryService {
 
     // get all movie in each genre
     public List<Movie> handleGetAllMoviesByGenre(String categoryName) {
-        Optional<Category> categoryOpt = categoryRepository.findByCategory(categoryName);
+        Optional<Category> categoryOpt = categoryRepository.findByCategoryName(categoryName);
 
         if (categoryOpt.isPresent()) {
             Long categoryId = categoryOpt.get().getId();
@@ -40,7 +40,7 @@ public class CategoryService {
     }
 
     public Category handleCreateCategory(Category newCate) {
-        Optional<Category> existingCategory = this.categoryRepository.findByCategory(newCate.getNameCategory());
+        Optional<Category> existingCategory = this.categoryRepository.findByCategoryName(newCate.getCategoryName());
 
         // if it has already in database so we don't create
         if (existingCategory.isPresent()){
@@ -52,7 +52,7 @@ public class CategoryService {
     }
 
     public Category handleGetCategory(String cate) {
-        Optional<Category> targetCate = this.categoryRepository.findByCategory(cate);
+        Optional<Category> targetCate = this.categoryRepository.findByCategoryName(cate);
 
         // if category is present in database then return it
         if (targetCate.isPresent()) {
@@ -64,14 +64,15 @@ public class CategoryService {
     }
 
     public Category handleUpdateCategory(String category, Category cate) {
-        Category updateCate = handleGetCategory(category);
+        Optional<Category> updateCate = this.categoryRepository.findByCategoryName(category);
 
-        if (updateCate != null) {
-            updateCate.setNameCategory(cate.getNameCategory());
-            this.categoryRepository.save(updateCate);
+        if (updateCate.isPresent()) {
+            Category categoryToUpdate = updateCate.get();
+            categoryToUpdate.setCategoryName(cate.getCategoryName());
+            return this.categoryRepository.save(categoryToUpdate);
         }
 
-        return updateCate;
+        return null;
     }
 
     public String handleDeleteAllCategory() {
