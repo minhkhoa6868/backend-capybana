@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.dto.Meta;
+import com.dto.PaginationData;
 import com.model.Category;
 import com.model.Movie;
 import com.repository.CategoryRepository;
@@ -55,9 +57,17 @@ public class MovieService {
         return null;
     }
 
-    public List<Movie> handleGetAllMovie(Pageable pageable) {
+    public PaginationData handleGetAllMovie(Pageable pageable) {
         Page<Movie> getList = this.movieRepository.findAll(pageable);
-        return getList.getContent();
+        PaginationData data = new PaginationData();
+        Meta metaResult = new Meta();
+        metaResult.setPageSize(getList.getSize());
+        metaResult.setCurrentPage(getList.getNumber() + 1);
+        metaResult.setTotalElements(getList.getNumberOfElements());
+        metaResult.setTotalPages(getList.getTotalPages());
+        data.setMeta(metaResult);
+        data.setResult(getList.getContent());
+        return data;
     }
 
     public Movie handleUpdateMovie(long id, Movie targetMovie) {

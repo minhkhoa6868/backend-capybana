@@ -2,6 +2,7 @@ package com.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dto.PaginationData;
 import com.model.Movie;
 import com.service.MovieService;
 import com.utils.annotation.ApiMessage;
@@ -72,7 +73,7 @@ public class MovieController {
 
     @GetMapping("/movies")
     @ApiMessage("Get all movies success")
-    public ResponseEntity<List<Movie>> getAllMovies(@RequestParam("current") Optional<String> currentOption,
+    public ResponseEntity<PaginationData> getAllMovies(@RequestParam("current") Optional<String> currentOption,
             @RequestParam("pageSize") Optional<String> pageSizeOption) {
         String currentStr = currentOption.isPresent() ? currentOption.get() : "";
         String pageOptionStr = pageSizeOption.isPresent() ? pageSizeOption.get() : "";
