@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.dto.Meta;
 import com.dto.PaginationData;
@@ -37,13 +35,13 @@ public class MovieService {
             return null;
         }
 
-        Optional<Category> categoryOptional = categoryRepository.findById(newMovie.getCategory().getId());
+        Optional<Category> categoryOptional = categoryRepository.findByCategoryName(newMovie.getCategory().getCategoryName());
 
         if (categoryOptional.isPresent()) {
             Category category = categoryOptional.get();
             newMovie.setCategory(category);
         } else {
-            throw new NoSuchElementException("Category not found with id: " + newMovie.getCategory().getId());
+            throw new NoSuchElementException("Category not found with name: " + newMovie.getCategory().getCategoryName());
         }
 
         return this.movieRepository.save(newMovie);
