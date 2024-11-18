@@ -5,6 +5,7 @@ import com.model.Rating;
 import com.repository.RatingRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ public class RatingService {
     }
 
     public Rating createRating(Rating rating) {
+        rating.setRatingDate(LocalDateTime.now());
         return ratingRepository.save(rating);
     }
     // truy van 1 danh gia dua vao ID

@@ -1,5 +1,7 @@
 package com.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -19,18 +21,24 @@ public class Rating {
     private Movie movie;
 
     private int rating;
+    private LocalDateTime ratingDate;
 
     // Constructors
     public Rating() {
     }
 
+    public Rating(User user, Movie movie, int rating, LocalDateTime ratingDate) {
+        this.user = user;
+        this.movie = movie;
+        this.rating = rating;
+        this.ratingDate = ratingDate;
+    }
+    
     public Rating(User user, Movie movie, int rating) {
         this.user = user;
         this.movie = movie;
         this.rating = rating;
     }
-
-
 
     //get and set--------------
 
@@ -61,6 +69,14 @@ public class Rating {
     }
     public void setRating(int rating) {
         this.rating = rating;
+    }
+
+    public LocalDateTime getRatingDate() {
+        return ratingDate;
+    }
+
+    public void setRatingDate(LocalDateTime ratingDate) {
+        this.ratingDate = ratingDate;
     }
 
 }
