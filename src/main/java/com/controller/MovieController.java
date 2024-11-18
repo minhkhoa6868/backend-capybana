@@ -83,14 +83,19 @@ public class MovieController {
         return ResponseEntity.status(HttpStatus.OK).body(this.movieService.handleGetAllMovie(pageable));
     }
 
-    @PutMapping("/movies")
+    @PutMapping("/movies/{id}")
     @ApiMessage("Movie has been updated")
-    public ResponseEntity<Movie> updateMovie(@RequestBody Movie mv) throws ResInvalidException {
-        Movie targetMovie = this.movieService.handleUpdateMovie(mv);
+    public ResponseEntity<Movie> updateMovie(@PathVariable long id, @RequestBody Movie mv) throws ResInvalidException {
+        Movie targetMovie = this.movieService.handleUpdateMovie(id, mv);
         if (targetMovie == null) {
             throw new ResInvalidException("Movies doesn't exist");
         }
         return ResponseEntity.ok(targetMovie);
     }
 
+    @GetMapping("/movies/newest")
+    public ResponseEntity<List<Movie>> getNewestMovies() {
+        return ResponseEntity.status(HttpStatus.OK).body(this.movieService.handleGetNewestMovie());
+    }
+    
 }
