@@ -89,7 +89,7 @@ public class MovieService {
 
             if (categoryOptional.isPresent()) {
                 Category category = categoryOptional.get();
-                category.setId(targetMovie.getCategory().getId());
+                category.setCategoryName(targetMovie.getCategory().getCategoryName());
                 movie.setCategory(category);
             } else {
                 throw new NoSuchElementException("Category not found with id: " + targetMovie.getCategory().getId());

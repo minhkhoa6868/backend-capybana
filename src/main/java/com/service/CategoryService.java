@@ -7,6 +7,7 @@ import com.model.Category;
 import com.model.Movie;
 import com.repository.MovieRepository;
 import com.repository.CategoryRepository;
+import org.springframework.data.domain.Sort;
 
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ public class CategoryService {
 
     // get all categories
     public List<Category> handleGetAllCategory() {
-        return this.categoryRepository.findAll();
+        return this.categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 
     public Category handleCreateCategory(Category newCate) {
