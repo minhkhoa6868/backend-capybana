@@ -13,7 +13,7 @@ import com.model.Movie;
 public interface MovieRepository extends JpaRepository<Movie, Long>, JpaSpecificationExecutor<Movie> {
     Movie findByTitle(String title);
 
-    List<Movie> findByCategory_Id(Long categoryId);
+    List<Movie> findByCategory_CategoryName(String categoryName);
 
     @Query(value = "SELECT * FROM movies ORDER BY release_date DESC", nativeQuery = true)
     List<Movie> findAllSortedByNewestDate();

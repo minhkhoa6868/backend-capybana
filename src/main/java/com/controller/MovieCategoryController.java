@@ -84,8 +84,6 @@ public class MovieCategoryController {
             throw new ResInvalidException("Category does not exist"); 
         }
 
-        System.out.println(deleteCategory.getId());
-
         this.categoryService.handleDeleteCategory(deleteCategory);
 
         return ResponseEntity.status(HttpStatus.OK).body(category + " has been deleted");

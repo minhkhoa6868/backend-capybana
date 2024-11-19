@@ -26,8 +26,8 @@ public class CategoryService {
         Optional<Category> categoryOpt = categoryRepository.findByCategoryName(categoryName);
 
         if (categoryOpt.isPresent()) {
-            Long categoryId = categoryOpt.get().getId();
-            return movieRepository.findByCategory_Id(categoryId);
+            String cateName = categoryOpt.get().getCategoryName();
+            return movieRepository.findByCategory_CategoryName(cateName);
         }
 
         // Return null if the category is not found
@@ -76,13 +76,13 @@ public class CategoryService {
     }
 
     public String handleDeleteAllCategory() {
-        this.categoryRepository.deleteAll();
+        this.categoryRepository.deleteAllCategory();
         return "All categories have been deleted!";
     }
 
     public void handleDeleteCategory(Category deleteCate) {
         if (deleteCate != null) {
-            this.categoryRepository.deleteById(deleteCate.getId());
+            this.categoryRepository.deleteByCategoryName(deleteCate.getCategoryName());
         }
     }
 }
