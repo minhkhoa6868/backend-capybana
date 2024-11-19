@@ -51,7 +51,7 @@ public class MovieController {
         return ResponseEntity.status(HttpStatus.OK).body("deleted");
     }
 
-    @DeleteMapping("/movies/all/abcde")
+    @DeleteMapping("/movies/all")
     @ApiMessage("Data Refreshed")
 
     public ResponseEntity<String> deleteAllMovie() {
