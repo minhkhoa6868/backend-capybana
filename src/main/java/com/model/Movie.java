@@ -31,6 +31,6 @@ public class Movie {
     @Column(columnDefinition = "DATE")
     private LocalDate releaseDate;
     @ManyToOne
-    @JoinColumn(name = "categoryId", columnDefinition = "BIGINT UNSIGNED NOT NULL", referencedColumnName = "id")
+    @JoinColumn(name = "cateName", columnDefinition = "VARCHAR(255) NOT NULL", referencedColumnName = "categoryName")
     Category category;
 }
