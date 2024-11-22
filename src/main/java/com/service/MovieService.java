@@ -5,13 +5,18 @@ import java.util.Optional;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.dto.Meta;
+import com.dto.PaginationData;
 import com.model.Category;
 import com.model.Movie;
 import com.repository.CategoryRepository;
 import com.repository.MovieRepository;
-
+import com.turkraft.springfilter.boot.Filter;
 
 @Service
 
@@ -30,13 +35,13 @@ public class MovieService {
             return null;
         }
 
-        Optional<Category> categoryOptional = categoryRepository.findById(newMovie.getCategory().getId());
+        Optional<Category> categoryOptional = categoryRepository.findByCategoryName(newMovie.getCategory().getCategoryName());
 
         if (categoryOptional.isPresent()) {
             Category category = categoryOptional.get();
             newMovie.setCategory(category);
         } else {
-            throw new NoSuchElementException("Category not found with id: " + newMovie.getCategory().getId());
+            throw new NoSuchElementException("Category not found with name: " + newMovie.getCategory().getCategoryName());
         }
 
         return this.movieRepository.save(newMovie);
@@ -54,8 +59,17 @@ public class MovieService {
         return null;
     }
 
-    public List<Movie> handleGetAllMovie() {
-        return this.movieRepository.findAll();
+    public PaginationData handleGetAllMovie(@Filter Specification<Movie> spec, Pageable pageable) {
+        Page<Movie> getList = this.movieRepository.findAll(spec, pageable);
+        PaginationData data = new PaginationData();
+        Meta metaResult = new Meta();
+        metaResult.setPageSize(getList.getSize());
+        metaResult.setCurrentPage(getList.getNumber() + 1);
+        metaResult.setTotalElements(getList.getNumberOfElements());
+        metaResult.setTotalPages(getList.getTotalPages());
+        data.setMeta(metaResult);
+        data.setResult(getList.getContent());
+        return data;
     }
 
     public Movie handleUpdateMovie(long id, Movie targetMovie) {
@@ -75,7 +89,7 @@ public class MovieService {
 
             if (categoryOptional.isPresent()) {
                 Category category = categoryOptional.get();
-                category.setId(targetMovie.getCategory().getId());
+                category.setCategoryName(targetMovie.getCategory().getCategoryName());
                 movie.setCategory(category);
             } else {
                 throw new NoSuchElementException("Category not found with id: " + targetMovie.getCategory().getId());
