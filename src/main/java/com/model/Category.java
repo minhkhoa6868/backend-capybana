@@ -15,8 +15,8 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "BIGINT UNSIGNED NOT NULL")
     Long id;
-    @Column(name = "categoryName", columnDefinition = "VARCHAR(255) NOT NULL", unique = true)
-    String categoryName;
+    @Column(columnDefinition = "VARCHAR(255) NOT NULL")
+    String name;
 
     public Long getId() {
         return this.id;
@@ -26,11 +26,11 @@ public class Category {
         this.id = id;
     }
 
-    public String getCategoryName() {
-        return this.categoryName;
+    public String getNameCategory() {
+        return this.name;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setNameCategory(String name) {
+        this.name = name;
     }
 }

@@ -7,7 +7,6 @@ import com.model.Category;
 import com.model.Movie;
 import com.repository.MovieRepository;
 import com.repository.CategoryRepository;
-import org.springframework.data.domain.Sort;
 
 import org.springframework.stereotype.Service;
 
@@ -24,11 +23,11 @@ public class CategoryService {
 
     // get all movie in each genre
     public List<Movie> handleGetAllMoviesByGenre(String categoryName) {
-        Optional<Category> categoryOpt = categoryRepository.findByCategoryName(categoryName);
+        Optional<Category> categoryOpt = categoryRepository.findByCategory(categoryName);
 
         if (categoryOpt.isPresent()) {
-            String cateName = categoryOpt.get().getCategoryName();
-            return movieRepository.findByCategory_CategoryName(cateName);
+            Long categoryId = categoryOpt.get().getId();
+            return movieRepository.findByCategory_Id(categoryId);
         }
 
         // Return null if the category is not found
@@ -37,11 +36,11 @@ public class CategoryService {
 
     // get all categories
     public List<Category> handleGetAllCategory() {
-        return this.categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+        return this.categoryRepository.findAll();
     }
 
     public Category handleCreateCategory(Category newCate) {
-        Optional<Category> existingCategory = this.categoryRepository.findByCategoryName(newCate.getCategoryName());
+        Optional<Category> existingCategory = this.categoryRepository.findByCategory(newCate.getNameCategory());
 
         // if it has already in database so we don't create
         if (existingCategory.isPresent()){
@@ -53,7 +52,7 @@ public class CategoryService {
     }
 
     public Category handleGetCategory(String cate) {
-        Optional<Category> targetCate = this.categoryRepository.findByCategoryName(cate);
+        Optional<Category> targetCate = this.categoryRepository.findByCategory(cate);
 
         // if category is present in database then return it
         if (targetCate.isPresent()) {
@@ -65,25 +64,24 @@ public class CategoryService {
     }
 
     public Category handleUpdateCategory(String category, Category cate) {
-        Optional<Category> updateCate = this.categoryRepository.findByCategoryName(category);
+        Category updateCate = handleGetCategory(category);
 
-        if (updateCate.isPresent()) {
-            Category categoryToUpdate = updateCate.get();
-            categoryToUpdate.setCategoryName(cate.getCategoryName());
-            return this.categoryRepository.save(categoryToUpdate);
+        if (updateCate != null) {
+            updateCate.setNameCategory(cate.getNameCategory());
+            this.categoryRepository.save(updateCate);
         }
 
-        return null;
+        return updateCate;
     }
 
     public String handleDeleteAllCategory() {
-        this.categoryRepository.deleteAllCategory();
+        this.categoryRepository.deleteAll();
         return "All categories have been deleted!";
     }
 
     public void handleDeleteCategory(Category deleteCate) {
         if (deleteCate != null) {
-            this.categoryRepository.deleteByCategoryName(deleteCate.getCategoryName());
+            this.categoryRepository.deleteById(deleteCate.getId());
         }
     }
 }

@@ -2,17 +2,13 @@ package com.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dto.PaginationData;
 import com.model.Movie;
 import com.service.MovieService;
-import com.turkraft.springfilter.boot.Filter;
 import com.utils.annotation.ApiMessage;
 import com.utils.error.ResInvalidException;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import java.util.List;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,7 +47,7 @@ public class MovieController {
         return ResponseEntity.status(HttpStatus.OK).body("deleted");
     }
 
-    @DeleteMapping("/movies/all")
+    @DeleteMapping("/movies/all/abcde")
     @ApiMessage("Data Refreshed")
 
     public ResponseEntity<String> deleteAllMovie() {
@@ -71,8 +67,9 @@ public class MovieController {
     }
 
     @GetMapping("/movies")
-    public ResponseEntity<PaginationData> getAllMovies(@Filter Specification<Movie> spec, Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.movieService.handleGetAllMovie(spec, pageable));
+    @ApiMessage("Get all movies success")
+    public ResponseEntity<List<Movie>> getAllMovies() {
+        return ResponseEntity.status(HttpStatus.OK).body(this.movieService.handleGetAllMovie());
     }
 
     @PutMapping("/movies/{id}")
