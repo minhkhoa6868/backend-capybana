@@ -1,11 +1,16 @@
 package com.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Wishlist {
@@ -14,30 +19,30 @@ public class Wishlist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "movie_id", nullable = false)
-    private Movie movie;
-
+   // Many-to-many relationship with Movie
+    @ManyToMany
+    @JoinTable(
+        name = "wishlist_movie",
+        joinColumns = @JoinColumn(name = "wishlist_id"),
+        inverseJoinColumns = @JoinColumn(name = "movie_id")
+    )
+    private Set<Movie> movies = new HashSet<>();
+    
     public Long getId(){ return id;}
     public void setId(Long id){this.id = id;}
 
     public User getUser(){ return user;}
     public void setUser(User user){ this.user = user;}
 
-    public Movie getMovie() { return movie; }
-    public void setMovie(Movie movie){this.movie = movie;}
+    public Set<Movie> getMovies() { return movies; }
+    public void setMovie(Set<Movie> movies){this.movies = movies;}
 
     // constructor
     public Wishlist(){}
-    public Wishlist(User user, Movie movie){
-        this.user = user;
-        this.movie = movie;
-    }
-
-    
-    
+    public Wishlist(User user){
+        this.user = user; }   
 }

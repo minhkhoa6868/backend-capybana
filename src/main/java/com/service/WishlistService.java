@@ -10,11 +10,14 @@ import com.repository.MovieRepository;
 import com.repository.UserRepository;
 import com.repository.WishlistRepository;
 
-import java.util.List;
+import java.util.HashSet;
 
+
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class WishlistService {
+
     @Autowired
     private WishlistRepository wishlistRepository;
     @Autowired
@@ -22,29 +25,46 @@ public class WishlistService {
     @Autowired
     private MovieRepository movieRepository;
 
+    @Transactional
+    public void addToWish(Long userId, Long movieId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Movie movie = movieRepository.findById(movieId)
+                .orElseThrow(() -> new RuntimeException("Movie not found"));
 
-    public void addToWish(Long userId, Long movieId){
-        User user  = userRepository.findById(userId)
-        .orElseThrow(() -> new RuntimeException("User not found"));
-        Movie movie  = movieRepository.findById(movieId)
-        .orElseThrow(() -> new RuntimeException("Movie not found"));
-        
-        Wishlist wishlist = new Wishlist();
-        wishlist.setUser(user);
-        wishlist.setMovie(movie);
+        // Retrieve or create a new wishlist for the user
+        Wishlist wishlist = wishlistRepository.findByUser(user);
+        if (wishlist == null) {
+            wishlist = new Wishlist(user);
+            wishlist.setMovie(new HashSet<>());
+        }
+        // if the wishlist conta
+        /*if(wishlist.getMovies().contains(movie)){
+            System.out.println("The movie is already exist");
+            return;
+        }*/
 
+
+        // Add movie to the wishlist
+        wishlist.getMovies().add(movie);
+
+        // Save the updated wishlist
         wishlistRepository.save(wishlist);
     }
 
-    //get wishlist
-
-    public List<Wishlist> getUserWishlist(Long userId) {
+    @Transactional(readOnly = true)
+    public Wishlist getUserWishlist(Long userId) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-    
-        return wishlistRepository.findByUser(user);
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Wishlist wishlist = wishlistRepository.findByUser(user);
+        if (wishlist == null) {
+            throw new RuntimeException("Wishlist not found for user");
+        }
+
+        // Initialize the lazy-loaded movies collection
+        wishlist.getMovies().size();
+
+        return wishlist;
     }
-    
-
-
 }
