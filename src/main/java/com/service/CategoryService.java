@@ -44,9 +44,10 @@ public class CategoryService {
         Optional<Category> existingCategory = this.categoryRepository.findByCategoryName(newCate.getCategoryName());
 
         // if it has already in database so we don't create
-        if (existingCategory.isPresent()) {
+        if (existingCategory.isPresent()){
             return null;
         }
+
         // else create
         return this.categoryRepository.save(newCate);
     }

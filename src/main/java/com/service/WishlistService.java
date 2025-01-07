@@ -12,6 +12,7 @@ import com.repository.WishlistRepository;
 
 import java.util.HashSet;
 
+
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -31,13 +32,23 @@ public class WishlistService {
         Movie movie = movieRepository.findById(movieId)
                 .orElseThrow(() -> new RuntimeException("Movie not found"));
 
+        // Retrieve or create a new wishlist for the user
         Wishlist wishlist = wishlistRepository.findByUser(user);
         if (wishlist == null) {
             wishlist = new Wishlist(user);
             wishlist.setMovie(new HashSet<>());
         }
+        // if the wishlist conta
+        /*if(wishlist.getMovies().contains(movie)){
+            System.out.println("The movie is already exist");
+            return;
+        }*/
+
+
+        // Add movie to the wishlist
         wishlist.getMovies().add(movie);
 
+        // Save the updated wishlist
         wishlistRepository.save(wishlist);
     }
 

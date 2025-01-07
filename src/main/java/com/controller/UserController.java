@@ -58,12 +58,6 @@ public class UserController {
         return ResponseEntity.ok(null);
     }
 
-    @DeleteMapping("/users/all")
-    public ResponseEntity<Void> deleteAllUser() throws ResInvalidException {
-        this.userService.handleDeleteAll();
-        return ResponseEntity.ok(null);
-    }
-
     @PutMapping("/users")
     @ApiMessage("This user has been updated")
     public ResponseEntity<User> updateUser(@RequestBody User inputUser) throws ResInvalidException {

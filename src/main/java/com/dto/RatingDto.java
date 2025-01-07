@@ -1,29 +1,33 @@
+
 package com.dto;
 
-import java.time.LocalDate;
-
-import com.model.Rating;
+import java.time.LocalDateTime;
 
 public class RatingDto {
+
     private Long userId;
     private Long movieId;
     private int rating;
-    private LocalDate ratingDate;
-    private String ratingContent;
+    private LocalDateTime ratingDate;
 
     // Constructors
     public RatingDto() {
     }
 
-    public RatingDto(Rating alpha) {
-        this.userId = alpha.getUser().getId();
-        this.movieId = alpha.getMovie().getId();
-        this.rating = alpha.getRating();
-        this.ratingDate = alpha.getRatingDate();
-        this.ratingContent = alpha.getRatingContent();
+    public RatingDto(Long userId, Long movieId, int rating, LocalDateTime ratingDate) {
+        this.userId = userId;
+        this.movieId = movieId;
+        this.rating = rating;
+        this.ratingDate = ratingDate;
     }
 
-    // Getters and Setters
+    public RatingDto(Long userId, Long movieId, int rating) {
+        this.userId = userId;
+        this.movieId = movieId;
+        this.rating = rating;
+    }
+
+    // Getters and setters
     public Long getUserId() {
         return userId;
     }
@@ -48,19 +52,10 @@ public class RatingDto {
         this.rating = rating;
     }
 
-    public LocalDate getRatingDate() {
+    public LocalDateTime getRatingDate(){
         return ratingDate;
     }
-
-    public void setRatingDate(LocalDate ratingDate) {
+    public void setRatingDate(LocalDateTime ratingDate){
         this.ratingDate = ratingDate;
-    }
-
-    public String getRatingContent() {
-        return ratingContent;
-    }
-
-    public void setRatingContent(String ratingContent) {
-        this.ratingContent = ratingContent;
     }
 }

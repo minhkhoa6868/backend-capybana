@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import com.dto.LoginDto;
 import com.dto.ResLoginDTO;
-import com.service.UserService;
 import com.utils.SecurityUtil;
 
 @RestController
@@ -20,13 +19,10 @@ public class AuthController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final SecurityUtil securityUtil;
-    private final UserService userService;
 
-    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, SecurityUtil securityUtil,
-            UserService uService) {
+    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, SecurityUtil securityUtil) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.securityUtil = securityUtil;
-        this.userService = uService;
     }
 
     @PostMapping("/login")
@@ -38,7 +34,6 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         ResLoginDTO response = new ResLoginDTO();
         response.setAccessToken(access_token);
-        response.setUserId(userService.handleGetUserIDByUsername(loginDto.getUsername()));
         return ResponseEntity.ok().body(response);
     }
 }
