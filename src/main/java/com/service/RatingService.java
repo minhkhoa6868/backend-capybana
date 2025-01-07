@@ -1,13 +1,15 @@
 
 package com.service;
 
+import com.dto.RatingDto;
+import com.dto.RatingResponse;
 import com.model.Rating;
 import com.repository.RatingRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class RatingService {
@@ -19,22 +21,36 @@ public class RatingService {
     }
 
     public Rating createRating(Rating rating) {
-        rating.setRatingDate(LocalDateTime.now());
+        rating.setRatingDate(LocalDate.now());
         return ratingRepository.save(rating);
     }
+
     // truy van 1 danh gia dua vao ID
-    public Rating getRatingById(Long id){
+    public Rating getRatingById(Long id) {
         Optional<Rating> ratingOptional = ratingRepository.findById(id);
-        if(ratingOptional.isPresent()) {
+        if (ratingOptional.isPresent()) {
             return ratingOptional.get();
-        } else{
+        } else {
             throw new RuntimeException("Rating not found");
         }
     }
 
-    //tra ve danh sach tat ca rating
-   public List<Rating> getAllRatings() {
-    return ratingRepository.findAll();
-}
+    public List<Rating> getRatingbyRatings(int rating) {
+        List<Rating> ratingList = ratingRepository.findAll();
+        Iterator<Rating> iterator = ratingList.iterator();
+        while (iterator.hasNext()) {
+            Rating currentRating = iterator.next();
+            if (currentRating.getRating() < rating) {
+                iterator.remove();
+            }
+        }
+        return ratingList;
+    }
+
+    // tra ve danh sach tat ca rating
+    public List<RatingDto> getAllRatings() {
+        List<Rating> list = ratingRepository.findAll();
+        return list.stream().map(RatingDto::new).toList();
+    }
 
 }
