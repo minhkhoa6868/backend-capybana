@@ -25,6 +25,11 @@ public class UserService {
         this.userRepository.deleteById(id);
     }
 
+    public void handleDeleteAll() {
+        this.userRepository.deleteAll();
+
+    }
+
     public User fetchUserById(long id) {
         Optional<User> userOptional = this.userRepository.findById(id);
         if (userOptional.isPresent()) {
@@ -50,6 +55,11 @@ public class UserService {
 
     public User handleGetUserByUsername(String username) {
         return this.userRepository.findByUsername(username);
+    }
+
+    public long handleGetUserIDByUsername(String username) {
+        User alpha = this.userRepository.findByUsername(username);
+        return alpha.getId();
     }
 
     public boolean isEmailExist(String email) {

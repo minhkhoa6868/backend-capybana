@@ -9,11 +9,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.dto.Meta;
 import com.dto.PaginationData;
 import com.model.Category;
 import com.model.Movie;
+import com.model.MovieSpecification;
 import com.repository.CategoryRepository;
 import com.repository.MovieRepository;
 import com.turkraft.springfilter.boot.Filter;
@@ -35,13 +37,15 @@ public class MovieService {
             return null;
         }
 
-        Optional<Category> categoryOptional = categoryRepository.findByCategoryName(newMovie.getCategory().getCategoryName());
+        Optional<Category> categoryOptional = categoryRepository
+                .findByCategoryName(newMovie.getCategory().getCategoryName());
 
         if (categoryOptional.isPresent()) {
             Category category = categoryOptional.get();
             newMovie.setCategory(category);
         } else {
-            throw new NoSuchElementException("Category not found with name: " + newMovie.getCategory().getCategoryName());
+            throw new NoSuchElementException(
+                    "Category not found with name: " + newMovie.getCategory().getCategoryName());
         }
 
         return this.movieRepository.save(newMovie);

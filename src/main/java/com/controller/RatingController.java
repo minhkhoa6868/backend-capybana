@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @RestController
@@ -29,32 +30,19 @@ public class RatingController {
     }
 
     @PostMapping
-    public ResponseEntity<RatingResponse> createRating(@RequestBody RatingDto ratingDto) {
+    public ResponseEntity<Rating> createRating(@RequestBody RatingDto ratingDto) {
         User user = userService.fetchUserById(ratingDto.getUserId());
         Movie movie = movieService.handleGetMovie(ratingDto.getMovieId());
 
-        Rating newRating = ratingService.createRating(new Rating(user, movie, ratingDto.getRating(), LocalDateTime.now()));
-
-        RatingResponse response = new RatingResponse(newRating.getId(), user, movie, newRating.getRating(), newRating.getRatingDate());
-
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<RatingResponse> getRating(@PathVariable Long id) {
-        Rating rating = ratingService.getRatingById(id);
-
-        User user = rating.getUser();
-        Movie movie = rating.getMovie();
-
-        RatingResponse response = new RatingResponse(rating.getId(), user, movie, rating.getRating(), rating.getRatingDate());
-
-        return ResponseEntity.ok(response);
+        Rating newRating = ratingService
+                .createRating(
+                        new Rating(user, movie, ratingDto.getRating(), LocalDate.now(), ratingDto.getRatingContent()));
+        return ResponseEntity.ok(newRating);
     }
 
     @GetMapping
-    public ResponseEntity<List<Rating>> getAllRatings() {
-        List<Rating> ratings = ratingService.getAllRatings();
+    public ResponseEntity<List<RatingDto>> getAllRatings() {
+        List<RatingDto> ratings = ratingService.getAllRatings();
         return ResponseEntity.ok(ratings);
     }
 }
