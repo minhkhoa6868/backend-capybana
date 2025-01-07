@@ -1,7 +1,5 @@
 package com.controller;
 
-import com.dto.RatingDto;
-import com.dto.RatingResponse;
 import com.model.Movie;
 import com.model.Rating;
 import com.model.User;
@@ -30,19 +28,38 @@ public class RatingController {
     }
 
     @PostMapping
-    public ResponseEntity<Rating> createRating(@RequestBody RatingDto ratingDto) {
-        User user = userService.fetchUserById(ratingDto.getUserId());
-        Movie movie = movieService.handleGetMovie(ratingDto.getMovieId());
+public ResponseEntity<Rating> createRating(@RequestBody Rating rating) {
+    User user = userService.fetchUserById(rating.getUser().getId());
+    Movie movie = movieService.handleGetMovie(rating.getMovie().getId());
 
-        Rating newRating = ratingService
-                .createRating(
-                        new Rating(user, movie, ratingDto.getRating(), LocalDate.now(), ratingDto.getRatingContent()));
-        return ResponseEntity.ok(newRating);
-    }
+    rating.setUser(user);
+    rating.setMovie(movie);
+    rating.setRatingDate(LocalDateTime.now());
+
+    Rating newRating = ratingService.createRating(rating);
+
+    return ResponseEntity.ok(newRating);
+}
+    @GetMapping("/{id}")
+public ResponseEntity<Rating> getRating(@PathVariable Long id) {
+    Rating rating = ratingService.getRatingById(id);
+    return ResponseEntity.ok(rating);
+}
 
     @GetMapping
-    public ResponseEntity<List<RatingDto>> getAllRatings() {
-        List<RatingDto> ratings = ratingService.getAllRatings();
+    public ResponseEntity<List<Rating>> getAllRatings() {
+        List<Rating> ratings = ratingService.getAllRatings();
         return ResponseEntity.ok(ratings);
     }
+
+@GetMapping("/movie/{movieId}")
+public ResponseEntity<List<Rating>> getRatingsByMovie(@PathVariable Long movieId) {
+    List<Rating> ratings = ratingService.getRatingsByMovie(movieId);
+    return ResponseEntity.ok(ratings);
+}
+@GetMapping("/user/{userId}")
+public ResponseEntity<List<Rating>> getRatingsByUser(@PathVariable Long userId) {
+    List<Rating> ratings = ratingService.getRatingsByUser(userId);
+    return ResponseEntity.ok(ratings);
+}
 }

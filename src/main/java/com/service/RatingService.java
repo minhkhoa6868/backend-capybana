@@ -1,8 +1,6 @@
 
 package com.service;
 
-import com.dto.RatingDto;
-import com.dto.RatingResponse;
 import com.model.Rating;
 import com.repository.RatingRepository;
 import org.springframework.stereotype.Service;
@@ -21,7 +19,7 @@ public class RatingService {
     }
 
     public Rating createRating(Rating rating) {
-        rating.setRatingDate(LocalDate.now());
+        rating.setRatingDate(LocalDateTime.now());
         return ratingRepository.save(rating);
     }
 
@@ -47,10 +45,16 @@ public class RatingService {
         return ratingList;
     }
 
-    // tra ve danh sach tat ca rating
-    public List<RatingDto> getAllRatings() {
-        List<Rating> list = ratingRepository.findAll();
-        return list.stream().map(RatingDto::new).toList();
+    //tra ve danh sach tat ca rating
+   public List<Rating> getAllRatings() {
+    return ratingRepository.findAll();
+}
+    // rating theo movieId
+    public List<Rating> getRatingsByMovie(Long movieId) {
+        return ratingRepository.findByMovieId(movieId);
     }
-
+    //rating theo userId
+    public List<Rating> getRatingsByUser(Long userId) {
+        return ratingRepository.findByUserId(userId);
+    }
 }
