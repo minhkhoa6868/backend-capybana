@@ -1,13 +1,16 @@
 
 package com.service;
 
+import com.dto.Meta;
+import com.dto.PaginationData;
 import com.model.Movie;
 import com.model.Rating;
 import com.repository.MovieRepository;
 import com.repository.RatingRepository;
-import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -15,9 +18,7 @@ import java.util.*;
 public class RatingService {
 
     private final RatingRepository ratingRepository;
-
-    //add movieRepository
-     private final MovieRepository movieRepository; 
+    private final MovieRepository movieRepository;
 
     public RatingService(RatingRepository ratingRepository, MovieRepository movieRepository) {
         this.ratingRepository = ratingRepository;
@@ -27,8 +28,6 @@ public class RatingService {
     public Rating createRating(Rating rating) {
         rating.setRatingDate(LocalDateTime.now());
         Rating newRating = ratingRepository.save(rating);
-
-        //calculate average
         Long movieId = newRating.getMovie().getId();
         float newAvg = this.calculateAverageRating(movieId);
 
@@ -38,23 +37,23 @@ public class RatingService {
             movie.setMovieRating(newAvg);
             movieRepository.save(movie);
         }
-        
+
         return newRating;
 
-
     }
-    /*Function: calculate average Rating */
-    public float calculateAverageRating(Long movieId){
+
+    /* Function: calculate average Rating */
+    public float calculateAverageRating(Long movieId) {
         List<Rating> listRating = ratingRepository.findByMovieId(movieId);
 
-        if(listRating.isEmpty()){
+        if (listRating.isEmpty()) {
             return 0;
         }
         float sum = 0;
-        for(Rating r : listRating){
-            sum+=r.getRating();
+        for (Rating r : listRating) {
+            sum += r.getRating();
         }
-        return sum/listRating.size();
+        return sum / listRating.size();
     }
 
     // truy van 1 danh gia dua vao ID
@@ -79,15 +78,27 @@ public class RatingService {
         return ratingList;
     }
 
-    //tra ve danh sach tat ca rating
-   public List<Rating> getAllRatings() {
-    return ratingRepository.findAll();
-}
-    // rating theo movieId
+    public PaginationData handleGetNewRatings(Pageable pageable) {
+        Page<Rating> ratingsPage = this.ratingRepository.findNewestRating(pageable);
+        PaginationData data = new PaginationData();
+        Meta metaResult = new Meta();
+        metaResult.setPageSize(ratingsPage.getSize());
+        metaResult.setCurrentPage(ratingsPage.getNumber() + 1);
+        metaResult.setTotalElements(ratingsPage.getNumberOfElements());
+        metaResult.setTotalPages(ratingsPage.getTotalPages());
+        data.setMeta(metaResult);
+        data.setResult(ratingsPage);
+        return data;
+    }
+
+    public List<Rating> getAllRatings() {
+        return ratingRepository.findAll();
+    }
+
     public List<Rating> getRatingsByMovie(Long movieId) {
         return ratingRepository.findByMovieId(movieId);
     }
-    //rating theo userId
+
     public List<Rating> getRatingsByUser(Long userId) {
         return ratingRepository.findByUserId(userId);
     }

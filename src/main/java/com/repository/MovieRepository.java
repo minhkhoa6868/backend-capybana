@@ -2,6 +2,7 @@ package com.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +16,10 @@ public interface MovieRepository extends JpaRepository<Movie, Long>, JpaSpecific
 
     List<Movie> findByCategory_CategoryName(String categoryName);
 
+    Movie findById(long id);
+
     @Query(value = "SELECT * FROM movies ORDER BY release_date DESC", nativeQuery = true)
-    List<Movie> findAllSortedByNewestDate();
+    List<Movie> findAllSortedByNewestDate(Pageable pageable);
+
+    List<Movie> findByMovieRatingGreaterThan(float movieRating);
 }

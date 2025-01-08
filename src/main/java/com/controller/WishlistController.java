@@ -1,11 +1,14 @@
 package com.controller;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.service.WishlistService;
 import com.utils.annotation.ApiMessage;
-import com.model.Wishlist;
+import com.utils.error.ResInvalidException;
+import com.model.Movie;
 import com.model.WishlistInput;
 
 @RestController
@@ -22,9 +25,16 @@ public class WishlistController {
         wishlistService.addToWish(input.getUserId(), input.getMovieId());
     }
 
+    @DeleteMapping
+    @ApiMessage("success remove from Wishlist")
+    public boolean deleteFromWishlist(@RequestBody WishlistInput input) throws ResInvalidException {
+        return wishlistService.deleteWishlist(input.getUserId(), input.getMovieId());
+    }
+
     // Get the user's wishlist
     @GetMapping("/{userId}")
-    public Wishlist getUserWishlist(@PathVariable Long userId) {
-        return wishlistService.getUserWishlist(userId);
+    public Set<Movie> getUserWishlist(@PathVariable Long userId) {
+        return wishlistService.getUserWishlist(userId).getMovies();
     }
+
 }

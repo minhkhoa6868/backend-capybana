@@ -1,17 +1,22 @@
 package com.controller;
 
+import com.dto.PaginationData;
 import com.model.Movie;
 import com.model.Rating;
 import com.model.User;
 import com.service.MovieService;
 import com.service.RatingService;
 import com.service.UserService;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/ratings")
@@ -28,23 +33,21 @@ public class RatingController {
     }
 
     @PostMapping
-public ResponseEntity<Rating> createRating(@RequestBody Rating rating) {
-    User user = userService.fetchUserById(rating.getUser().getId());
-    Movie movie = movieService.handleGetMovie(rating.getMovie().getId());
+    public ResponseEntity<Rating> createRating(@RequestBody Rating rating) {
+        User user = userService.fetchUserById(rating.getUser().getId());
+        Movie movie = movieService.handleGetMovie(rating.getMovie().getId());
+        rating.setUser(user);
+        rating.setMovie(movie);
+        rating.setRatingDate(LocalDateTime.now());
+        Rating newRating = ratingService.createRating(rating);
+        return ResponseEntity.ok(newRating);
+    }
 
-    rating.setUser(user);
-    rating.setMovie(movie);
-    rating.setRatingDate(LocalDateTime.now());
-
-    Rating newRating = ratingService.createRating(rating);
-
-    return ResponseEntity.ok(newRating);
-}
     @GetMapping("/{id}")
-public ResponseEntity<Rating> getRating(@PathVariable Long id) {
-    Rating rating = ratingService.getRatingById(id);
-    return ResponseEntity.ok(rating);
-}
+    public ResponseEntity<Rating> getRating(@PathVariable Long id) {
+        Rating rating = ratingService.getRatingById(id);
+        return ResponseEntity.ok(rating);
+    }
 
     @GetMapping
     public ResponseEntity<List<Rating>> getAllRatings() {
@@ -52,14 +55,21 @@ public ResponseEntity<Rating> getRating(@PathVariable Long id) {
         return ResponseEntity.ok(ratings);
     }
 
-@GetMapping("/movie/{movieId}")
-public ResponseEntity<List<Rating>> getRatingsByMovie(@PathVariable Long movieId) {
-    List<Rating> ratings = ratingService.getRatingsByMovie(movieId);
-    return ResponseEntity.ok(ratings);
-}
-@GetMapping("/user/{userId}")
-public ResponseEntity<List<Rating>> getRatingsByUser(@PathVariable Long userId) {
-    List<Rating> ratings = ratingService.getRatingsByUser(userId);
-    return ResponseEntity.ok(ratings);
-}
+    @GetMapping("/movie/{movieId}")
+    public ResponseEntity<List<Rating>> getRatingsByMovie(@PathVariable Long movieId) {
+        List<Rating> ratings = ratingService.getRatingsByMovie(movieId);
+        return ResponseEntity.ok(ratings);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Rating>> getRatingsByUser(@PathVariable Long userId) {
+        List<Rating> ratings = ratingService.getRatingsByUser(userId);
+        return ResponseEntity.ok(ratings);
+    }
+
+    @GetMapping("/newest")
+    public ResponseEntity<PaginationData> getMethodName(Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.ratingService.handleGetNewRatings(pageable));
+    }
+
 }

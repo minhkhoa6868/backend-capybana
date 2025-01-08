@@ -1,8 +1,6 @@
 package com.model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,6 +36,7 @@ public class Rating {
         ratingDate = now;
         ratingContent = ratingContent2;
     }
+
     // Getters and setters
     public Long getId() {
         return id;

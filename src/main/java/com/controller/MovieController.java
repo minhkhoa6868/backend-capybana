@@ -110,11 +110,15 @@ public class MovieController {
     @GetMapping("/movies/search")
     public ResponseEntity<PaginationData> handleSearch(
             @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "minRating", required = false) Float minRating,
             @Filter Specification<Movie> spec,
             Pageable pageable) {
         Specification<Movie> combinedSpec = Specification.where(spec);
         if (title != null) {
             combinedSpec = combinedSpec.and(MovieSpecification.titleStartsWith(title));
+        }
+        if (minRating != null) {
+            combinedSpec = combinedSpec.and(MovieSpecification.ratingGreaterThan(minRating));
         }
         return ResponseEntity.status(HttpStatus.OK).body(this.movieService.handleGetAllMovie(combinedSpec, pageable));
     }
@@ -135,8 +139,8 @@ public class MovieController {
     }
 
     @GetMapping("/movies/newest")
-    public ResponseEntity<List<Movie>> getNewestMovies() {
-        return ResponseEntity.status(HttpStatus.OK).body(this.movieService.handleGetNewestMovie());
+    public ResponseEntity<List<Movie>> getNewestMovies(Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.movieService.handleGetNewestMovie(pageable));
     }
 
 }

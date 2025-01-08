@@ -9,13 +9,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.dto.Meta;
 import com.dto.PaginationData;
 import com.model.Category;
 import com.model.Movie;
-import com.model.MovieSpecification;
 import com.repository.CategoryRepository;
 import com.repository.MovieRepository;
 import com.turkraft.springfilter.boot.Filter;
@@ -56,11 +54,11 @@ public class MovieService {
     }
 
     public Movie handleGetMovie(long id) {
-        Optional<Movie> targetMovie = this.movieRepository.findById(id);
-        if (targetMovie.isPresent()) {
-            return targetMovie.get();
-        }
-        return null;
+        return this.movieRepository.findById(id);
+    }
+
+    public List<Movie> findMovieRatingGreaterThan(float rating) {
+        return this.movieRepository.findByMovieRatingGreaterThan(rating);
     }
 
     public PaginationData handleGetAllMovie(@Filter Specification<Movie> spec, Pageable pageable) {
@@ -76,19 +74,16 @@ public class MovieService {
         return data;
     }
 
+    public List<Movie> handleGetNewestMovie(Pageable pageable) {
+        return this.movieRepository.findAllSortedByNewestDate(pageable);
+    }
+
     public Movie handleUpdateMovie(long id, Movie targetMovie) {
         Movie movie = this.handleGetMovie(id);
         if (movie != null) {
-            // update title
             movie.setTitle(targetMovie.getTitle());
-
-            // update description
             movie.setDescription(targetMovie.getDescription());
-
-            // update release date
             movie.setReleaseDate(targetMovie.getReleaseDate());
-
-            // update category
             Optional<Category> categoryOptional = categoryRepository.findById(movie.getCategory().getId());
 
             if (categoryOptional.isPresent()) {
@@ -98,8 +93,6 @@ public class MovieService {
             } else {
                 throw new NoSuchElementException("Category not found with id: " + targetMovie.getCategory().getId());
             }
-
-            // save to database
             this.movieRepository.save(movie);
         }
         return movie;
@@ -108,11 +101,6 @@ public class MovieService {
     public String handleDeleteAll() {
         this.movieRepository.deleteAll();
         return "All the movies has been deleted";
-    }
-
-    // list of newest film
-    public List<Movie> handleGetNewestMovie() {
-        return this.movieRepository.findAllSortedByNewestDate();
     }
 
 }

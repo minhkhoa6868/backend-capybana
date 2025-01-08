@@ -7,4 +7,9 @@ public class MovieSpecification {
         return (root, query, criteriaBuilder) -> criteriaBuilder.like(criteriaBuilder.lower(root.get("title")),
                 prefix.toLowerCase() + "%");
     }
+
+    public static Specification<Movie> ratingGreaterThan(Float minRating) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(root.get("movieRating"),
+                minRating);
+    }
 }
